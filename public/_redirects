@@ -1,2 +1,0 @@
-# SPA fallback is handled by wrangler.toml [assets] not_found_handling
-# Keep this file for any explicit redirects if needed
