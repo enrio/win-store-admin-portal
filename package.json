@@ -1,0 +1,72 @@
+{
+  "name": "win-store-admin-portal",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc && refine build",
+    "dev": "refine dev",
+    "refine": "refine",
+    "start": "refine start"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
+    "@googlemaps/react-wrapper": "^1.1.35",
+    "@mui/icons-material": "^7.3.9",
+    "@mui/lab": "^7.0.1-beta.23",
+    "@mui/material": "^7.3.9",
+    "@mui/x-data-grid": "^8.27.4",
+    "@refinedev/cli": "^2.16.51",
+    "@refinedev/core": "^5.0.10",
+    "@refinedev/kbar": "2.0.1",
+    "@refinedev/mui": "^8.0.1",
+    "@refinedev/react-hook-form": "^5.0.4",
+    "@refinedev/react-router": "^2.0.4",
+    "@refinedev/react-table": "^6.0.1",
+    "@refinedev/simple-rest": "^6.0.1",
+    "@tanstack/react-table": "^8.2.6",
+    "@uiw/react-md-editor": "^4.0.11",
+    "axios": "^1.13.6",
+    "dayjs": "^1.11.19",
+    "google-map-react": "^2.2.5",
+    "i18next": "^25.8.14",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "i18next-http-backend": "^3.0.2",
+    "lodash": "^4.17.23",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-hook-form": "^7.71.2",
+    "react-i18next": "^16.5.6",
+    "react-input-mask": "^2.0.4",
+    "react-router": "^7.13.1",
+    "recharts": "^3.8.0",
+    "usehooks-ts": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/google.maps": "^3.58.1",
+    "@types/lodash": "^4.17.24",
+    "@types/node": "^20",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-input-mask": "^3.0.6",
+    "@vitejs/plugin-react": "^5.1.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
