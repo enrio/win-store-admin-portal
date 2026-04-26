@@ -29,7 +29,7 @@ import Brightness4Icon from "@mui/icons-material/Brightness4";
 import i18n from "../../i18n";
 import type { IOrder, IStore, ICourier, IIdentity } from "../../interfaces";
 import { ColorModeContext } from "../../contexts";
-
+import { useStoreContext } from "../../contexts/store";
 interface IOptions {
   label: string;
   avatar?: ReactNode;
@@ -50,6 +50,7 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = () => {
 
   const t = useTranslate();
 
+  const { store, stores, switchStore } = useStoreContext();
   const {
     result: ordersData,
 
@@ -308,6 +309,30 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = () => {
               sm: "24px",
             }}
           >
+            {stores && stores.length > 1 && (
+              <Select
+                size="small"
+                disableUnderline
+                value={store?.store_id || ""}
+                onChange={(e) => {
+                  switchStore(e.target.value as string);
+                  window.location.reload();
+                }}
+                variant="outlined"
+                sx={{
+                  width: { xs: "120px", sm: "160px" },
+                }}
+              >
+                {stores.map((s) => (
+                  <MenuItem key={s.store_id} value={s.store_id}>
+                    <Typography color="text.secondary" noWrap>
+                      {s.name}
+                    </Typography>
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+
             <Select
               size="small"
               disableUnderline

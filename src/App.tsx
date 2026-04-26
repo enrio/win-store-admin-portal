@@ -1,4 +1,4 @@
-import { Authenticated, GitHubBanner, Refine } from "@refinedev/core";
+import { Authenticated, Refine } from "@refinedev/core";
 import { KBarProvider } from "@refinedev/kbar";
 import {
   ErrorComponent,
@@ -8,7 +8,7 @@ import {
 } from "@refinedev/mui";
 import GlobalStyles from "@mui/material/GlobalStyles";
 import CssBaseline from "@mui/material/CssBaseline";
-import dataProvider from "@refinedev/simple-rest";
+import { dataProvider } from "@refinedev/supabase";
 import routerProvider, {
   CatchAllNavigate,
   NavigateToResource,
@@ -24,8 +24,10 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import FastfoodOutlinedIcon from "@mui/icons-material/FastfoodOutlined";
 import LabelOutlinedIcon from "@mui/icons-material/LabelOutlined";
 import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
+import IntegrationInstructionsOutlinedIcon from "@mui/icons-material/IntegrationInstructionsOutlined";
 import Box from "@mui/material/Box";
 import { authProvider } from "./authProvider";
+import { supabaseClient } from "./supabaseClient";
 import { DashboardPage } from "./pages/dashboard";
 import { OrderList, OrderShow } from "./pages/orders";
 import { CustomerShow, CustomerList } from "./pages/customers";
@@ -34,17 +36,13 @@ import { AuthPage } from "./pages/auth";
 import { StoreList, StoreEdit, StoreCreate } from "./pages/stores";
 import { ProductEdit, ProductList, ProductCreate } from "./pages/products";
 import { CategoryList } from "./pages/categories";
+import { IntegrationList } from "./pages/integrations";
 import { ColorModeContextProvider } from "./contexts";
+import { StoreContextProvider, OnboardingGate } from "./contexts/store";
 import { Header, Title } from "./components";
-import { useAutoLoginForDemo } from "./hooks";
-
-const API_URL = "https://api.finefoods.refine.dev";
+import { StoreOnboardingPage } from "./pages/store-onboarding";
 
 const App: React.FC = () => {
-  // This hook is used to automatically login the user.
-  // We use this hook to skip the login page and demonstrate the application more quickly.
-  const { loading } = useAutoLoginForDemo();
-
   const { t, i18n } = useTranslation();
   const i18nProvider = {
     translate: (key: string, params?: any) => String(t(key, params as any)),
@@ -52,13 +50,8 @@ const App: React.FC = () => {
     getLocale: () => i18n.language,
   };
 
-  if (loading) {
-    return null;
-  }
-
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <KBarProvider>
         <ColorModeContextProvider>
           <CssBaseline />
@@ -66,7 +59,7 @@ const App: React.FC = () => {
           <RefineSnackbarProvider>
             <Refine
               routerProvider={routerProvider}
-              dataProvider={dataProvider(API_URL)}
+              dataProvider={dataProvider(supabaseClient)}
               authProvider={authProvider}
               i18nProvider={i18nProvider}
               options={{
@@ -127,6 +120,14 @@ const App: React.FC = () => {
                   },
                 },
                 {
+                  name: "integrations",
+                  list: "/integrations",
+                  meta: {
+                    label: "Channels",
+                    icon: <IntegrationInstructionsOutlinedIcon />,
+                  },
+                },
+                {
                   name: "couriers",
                   list: "/couriers",
                   create: "/couriers/new",
@@ -144,17 +145,23 @@ const App: React.FC = () => {
                       key="authenticated-routes"
                       fallback={<CatchAllNavigate to="/login" />}
                     >
-                      <ThemedLayout Header={Header} Title={Title}>
-                        <Box
-                          sx={{
-                            maxWidth: "1200px",
-                            marginLeft: "auto",
-                            marginRight: "auto",
-                          }}
+                      <StoreContextProvider>
+                        <OnboardingGate
+                          fallback={<StoreOnboardingPage />}
                         >
-                          <Outlet />
-                        </Box>
-                      </ThemedLayout>
+                          <ThemedLayout Header={Header} Title={Title}>
+                            <Box
+                              sx={{
+                                maxWidth: "1200px",
+                                marginLeft: "auto",
+                                marginRight: "auto",
+                              }}
+                            >
+                              <Outlet />
+                            </Box>
+                          </ThemedLayout>
+                        </OnboardingGate>
+                      </StoreContextProvider>
                     </Authenticated>
                   }
                 >
@@ -195,6 +202,8 @@ const App: React.FC = () => {
 
                   <Route path="/categories" element={<CategoryList />} />
 
+                  <Route path="/integrations" element={<IntegrationList />} />
+
                   <Route path="/couriers">
                     <Route
                       path=""
@@ -220,44 +229,15 @@ const App: React.FC = () => {
                 >
                   <Route
                     path="/login"
-                    element={
-                      <AuthPage
-                        type="login"
-                        formProps={{
-                          defaultValues: {
-                            email: "demo@refine.dev",
-                            password: "demodemo",
-                          },
-                        }}
-                      />
-                    }
+                    element={<AuthPage type="login" />}
                   />
                   <Route
                     path="/register"
-                    element={
-                      <AuthPage
-                        type="register"
-                        formProps={{
-                          defaultValues: {
-                            email: "demo@refine.dev",
-                            password: "demodemo",
-                          },
-                        }}
-                      />
-                    }
+                    element={<AuthPage type="register" />}
                   />
                   <Route
                     path="/forgot-password"
-                    element={
-                      <AuthPage
-                        type="forgotPassword"
-                        formProps={{
-                          defaultValues: {
-                            email: "demo@refine.dev",
-                          },
-                        }}
-                      />
-                    }
+                    element={<AuthPage type="forgotPassword" />}
                   />
                   <Route
                     path="/update-password"
